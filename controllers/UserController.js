@@ -22,26 +22,26 @@ export const register =  async (req, res) => {
       fullName: req.body.fullName,
       passwordHash: hash,
       role: req.body.role,
-     }); //создаём документ с пользователем
+     }); //создаём документ пользователя
     
      const user = await doc.save();//документ создан в BD
  
      const token = jwt.sign(
-         {
-             _id: user._id,
-         }, 
-              'secret123',
-         {
-             expiresIn: '30d',
-         },
+         { 
+            _id: user._id,
+            role: user.role
+        }, 
+        'secret123', 
+        {
+            expiresIn: '30d',
+        },
      );
  
-     const { passwordHash, ...userData } = user._doc;//вытаскием passwordHash при помощи деструктуризация чтобы не возращать его пользователю
+     const { passwordHash, ...userData } = user._doc;//вытаскием passwordHash при помощи деструктуризации чтобы не возращать его пользователю
   
      res.json({
          ...userData,
          token,
-         role: user.role,
      });
     } catch (err) {
      console.log(err);
